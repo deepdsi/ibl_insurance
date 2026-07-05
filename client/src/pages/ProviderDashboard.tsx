@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getClaims } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ export default function ProviderDashboard() {
             <thead>
               <tr>
                 <th>Patient Name</th>
-                <th>Policy #</th>
+                <th>Policy No. (UIN)</th>
                 <th>Procedure</th>
                 <th>Amount</th>
                 <th>Status</th>
@@ -56,7 +57,7 @@ export default function ProviderDashboard() {
                   <td>{claim.patientName}</td>
                   <td>{claim.policyNumber}</td>
                   <td>{claim.procedureName}</td>
-                  <td>${claim.totalAmount.toFixed(2)}</td>
+                  <td>{formatCurrency(claim.totalAmount)}</td>
                   <td>
                     <span className={`status-badge status-${claim.status.toLowerCase().replace(/\s+/g, '-')}`}>
                       {claim.status}

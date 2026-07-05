@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { submitClaim } from '../api/claims';
 import './Forms.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function SubmitClaim() {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ export default function SubmitClaim() {
                 />
               </div>
               <div className="form-group">
-                <label>Policy Number *</label>
+                <label>Policy No. (UIN) *</label>
                 <input
                   type="text"
                   name="policyNumber"
@@ -191,7 +192,7 @@ export default function SubmitClaim() {
                   </div>
                   <div className="form-group">
                     <label>Subtotal</label>
-                    <input type="text" value={`$${(item.quantity * item.unitCost).toFixed(2)}`} disabled />
+                    <input type="text" value={formatCurrency(item.quantity * item.unitCost)} disabled />
                   </div>
                 </div>
                 {formData.lineItems.length > 1 && (
@@ -210,7 +211,7 @@ export default function SubmitClaim() {
               + Add Line Item
             </button>
             <div className="line-item-total">
-              <strong>Total Amount: ${totalAmount.toFixed(2)}</strong>
+              <strong>Total Amount: {formatCurrency(totalAmount)}</strong>
             </div>
           </section>
 

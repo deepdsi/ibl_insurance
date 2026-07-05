@@ -1,3 +1,5 @@
+import { ANNUAL_LIMIT, DEDUCTIBLE_AMOUNT } from './currency';
+
 export interface CoverageResult {
   coveredAmount: number;
   patientResponsibility: number;
@@ -5,9 +7,9 @@ export interface CoverageResult {
 }
 
 export function calculateCoverage(totalAmount: number, _policyId?: string): CoverageResult {
-  const deductible = 500;
+  const deductible = DEDUCTIBLE_AMOUNT;
   const coinsuranceRate = 0.8;
-  const annualLimit = 5000;
+  const annualLimit = ANNUAL_LIMIT;
 
   const amountAboveDeductible = Math.max(totalAmount - deductible, 0);
   const coveredAmount = Math.min(amountAboveDeductible * coinsuranceRate, annualLimit);

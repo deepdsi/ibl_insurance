@@ -4,6 +4,7 @@ import { calculateCoverage } from '../utils/policy';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
 import { upload } from '../utils/upload';
 import { parseLineItemsInput } from '../utils/claimPayload';
+import { formatCurrency } from '../utils/currency';
 
 const router = Router();
 
@@ -32,7 +33,14 @@ router.post('/', requireAuth(['provider']), upload.array('documents', 5), async 
       auditTrail: [{ changedBy: providerId, action: 'Submitted claim', reason: 'Initial submission' }],
     });
 
-    res.status(201).json(claim);
+    res.status(201).json({
+      ...claim.toObject(),
+      currency: 'INR',
+      currencySymbol: '₹',
+      formattedTotalAmount: formatCurrency(totalAmount),
+      formattedCoveredAmount: formatCurrency(coverage.coveredAmount),
+      formattedPatientResponsibility: formatCurrency(coverage.patientResponsibility),
+    });
   } catch (error) {
     console.error('Create claim failed:', error);
     res.status(500).json({ message: 'Failed to create claim', error: error instanceof Error ? error.message : 'Unknown error' });
@@ -44,7 +52,14 @@ router.get('/', requireAuth(['provider', 'reviewer', 'admin']), async (req: Requ
   const claims = authReq.user?.role === 'provider'
     ? await Claim.find({ providerId: authReq.user.id }).sort({ createdAt: -1 })
     : await Claim.find().sort({ createdAt: -1 });
-  res.json(claims);
+  res.json(claims.map((claim) => ({
+    ...claim.toObject(),
+    currency: 'INR',
+    currencySymbol: '₹',
+    formattedTotalAmount: formatCurrency(claim.totalAmount),
+    formattedCoveredAmount: formatCurrency(claim.coveredAmount),
+    formattedPatientResponsibility: formatCurrency(claim.patientResponsibility),
+  })));
 });
 
 router.get('/:id', requireAuth(['provider', 'reviewer', 'admin']), async (req: Request, res) => {
@@ -60,7 +75,14 @@ router.get('/:id', requireAuth(['provider', 'reviewer', 'admin']), async (req: R
       return res.status(403).json({ message: 'Forbidden' });
     }
 
-    res.json(claim);
+    res.json({
+      ...claim.toObject(),
+      currency: 'INR',
+      currencySymbol: '₹',
+      formattedTotalAmount: formatCurrency(claim.totalAmount),
+      formattedCoveredAmount: formatCurrency(claim.coveredAmount),
+      formattedPatientResponsibility: formatCurrency(claim.patientResponsibility),
+    });
   } catch (error) {
     console.error('Get claim failed:', error);
     res.status(500).json({ message: 'Failed to get claim', error: error instanceof Error ? error.message : 'Unknown error' });
@@ -119,7 +141,14 @@ router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), asyn
 
     await claim.save();
 
-    res.json(claim);
+    res.json({
+      ...claim.toObject(),
+      currency: 'INR',
+      currencySymbol: '₹',
+      formattedTotalAmount: formatCurrency(claim.totalAmount),
+      formattedCoveredAmount: formatCurrency(claim.coveredAmount),
+      formattedPatientResponsibility: formatCurrency(claim.patientResponsibility),
+    });
   } catch (error) {
     console.error('Resubmit claim failed:', error);
     res.status(500).json({ message: 'Failed to resubmit claim', error: error instanceof Error ? error.message : 'Unknown error' });
@@ -141,7 +170,14 @@ router.post('/:id/review', requireAuth(['reviewer', 'admin']), async (req: Reque
     claim.auditTrail.push({ changedBy, action: `Status changed to ${status}`, timestamp: new Date(), reason: reviewerNotes || rejectionReason });
     await claim.save();
 
-    res.json(claim);
+    res.json({
+      ...claim.toObject(),
+      currency: 'INR',
+      currencySymbol: '₹',
+      formattedTotalAmount: formatCurrency(claim.totalAmount),
+      formattedCoveredAmount: formatCurrency(claim.coveredAmount),
+      formattedPatientResponsibility: formatCurrency(claim.patientResponsibility),
+    });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update claim' });
   }

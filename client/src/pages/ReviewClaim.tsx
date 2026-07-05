@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getClaims, updateClaimStatus } from '../api/claims';
 import { Claim } from '../types';
 import './Forms.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function ReviewClaim() {
   const { claimId } = useParams<{ claimId: string }>();
@@ -69,7 +70,7 @@ export default function ReviewClaim() {
                 <p>{claim.patientName}</p>
               </div>
               <div className="readonly-field">
-                <label>Policy Number</label>
+                <label>Policy No. (UIN)</label>
                 <p>{claim.policyNumber}</p>
               </div>
             </div>
@@ -90,7 +91,7 @@ export default function ReviewClaim() {
               </div>
               <div className="readonly-field">
                 <label>Total Amount</label>
-                <p>${claim.totalAmount.toFixed(2)}</p>
+                <p>{formatCurrency(claim.totalAmount)}</p>
               </div>
             </div>
           </section>
@@ -111,8 +112,8 @@ export default function ReviewClaim() {
                   <tr key={index}>
                     <td>{item.description}</td>
                     <td>{item.quantity}</td>
-                    <td>${item.unitCost.toFixed(2)}</td>
-                    <td>${(item.quantity * item.unitCost).toFixed(2)}</td>
+                    <td>{formatCurrency(item.unitCost)}</td>
+                    <td>{formatCurrency(item.quantity * item.unitCost)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -124,15 +125,15 @@ export default function ReviewClaim() {
             <div className="coverage-details">
               <div className="coverage-row">
                 <span>Total Amount Claimed:</span>
-                <strong>${claim.totalAmount.toFixed(2)}</strong>
+                <strong>{formatCurrency(claim.totalAmount)}</strong>
               </div>
               <div className="coverage-row">
                 <span>Covered Amount (80% after deductible):</span>
-                <strong>${claim.coveredAmount.toFixed(2)}</strong>
+                <strong>{formatCurrency(claim.coveredAmount)}</strong>
               </div>
               <div className="coverage-row">
                 <span>Patient Responsibility:</span>
-                <strong>${claim.patientResponsibility.toFixed(2)}</strong>
+                <strong>{formatCurrency(claim.patientResponsibility)}</strong>
               </div>
             </div>
           </section>

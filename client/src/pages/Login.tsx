@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login as apiLogin } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import './Auth.css';
@@ -59,6 +59,9 @@ export default function Login() {
           </button>
         </form>
         <div className="auth-footer">
+          <p>
+            New provider? <Link to="/register">Register here</Link>
+          </p>
           <p>Demo credentials:</p>
           <p>Provider: provider@example.com / pass123</p>
           <p>Reviewer: reviewer@example.com / pass123</p>

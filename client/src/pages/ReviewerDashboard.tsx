@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getClaims } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ export default function ReviewerDashboard() {
                 <tr key={claim._id} className={pendingClaims.some((c) => c._id === claim._id) ? 'pending' : ''}>
                   <td>{claim.patientName}</td>
                   <td>{claim.procedureName}</td>
-                  <td>${claim.totalAmount.toFixed(2)}</td>
+                  <td>{formatCurrency(claim.totalAmount)}</td>
                   <td>
                     <span className={`status-badge status-${claim.status.toLowerCase().replace(/\s+/g, '-')}`}>
                       {claim.status}

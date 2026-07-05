@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
 import Login from './pages/Login';
+import Register from './pages/Register';
 import ProviderDashboard from './pages/ProviderDashboard';
 import SubmitClaim from './pages/SubmitClaim';
 import ReviewerDashboard from './pages/ReviewerDashboard';
@@ -19,6 +20,7 @@ export default function App() {
         <ErrorBoundary>
           <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Provider Routes */}
           <Route

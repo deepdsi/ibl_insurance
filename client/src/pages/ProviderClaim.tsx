@@ -4,6 +4,7 @@ import { getClaim, resubmitClaim } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
 import './Forms.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function ProviderClaim() {
   const { claimId } = useParams();
@@ -130,8 +131,8 @@ export default function ProviderClaim() {
             <h2>Patient</h2>
             <p className="claim-label">Name</p>
             <p className="claim-value">{claim.patientName}</p>
-            <p className="claim-label">Policy</p>
-            <p className="claim-value">#{claim.policyNumber}</p>
+            <p className="claim-label">Policy No. (UIN)</p>
+            <p className="claim-value">{claim.policyNumber}</p>
             <p className="claim-label">Date of Birth</p>
             <p className="claim-value">{claim.dateOfBirth}</p>
           </div>
@@ -163,8 +164,8 @@ export default function ProviderClaim() {
                     <tr key={idx}>
                       <td>{li.description}</td>
                       <td>{li.quantity}</td>
-                      <td>${li.unitCost.toFixed(2)}</td>
-                      <td>${(li.quantity * li.unitCost).toFixed(2)}</td>
+                      <td>{formatCurrency(li.unitCost)}</td>
+                      <td>{formatCurrency(li.quantity * li.unitCost)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -176,15 +177,15 @@ export default function ProviderClaim() {
                 <h2>Coverage Calculation</h2>
                 <div className="claim-stat">
                   <span>Total Amount Claimed:</span>
-                  <strong>${claim.totalAmount.toFixed(2)}</strong>
+                  <strong>{formatCurrency(claim.totalAmount)}</strong>
                 </div>
                 <div className="claim-stat">
                   <span>Covered Amount (80% after deductible):</span>
-                  <strong>${claim.coveredAmount.toFixed(2)}</strong>
+                  <strong>{formatCurrency(claim.coveredAmount)}</strong>
                 </div>
                 <div className="claim-stat">
                   <span>Patient Responsibility:</span>
-                  <strong>${claim.patientResponsibility.toFixed(2)}</strong>
+                  <strong>{formatCurrency(claim.patientResponsibility)}</strong>
                 </div>
               </div>
 
@@ -229,7 +230,7 @@ export default function ProviderClaim() {
                     <input type="text" name="patientName" value={editForm.patientName} onChange={handleInputChange} required disabled={isSubmitting} />
                   </div>
                   <div className="form-group">
-                    <label>Policy Number *</label>
+                    <label>Policy No. (UIN) *</label>
                     <input type="text" name="policyNumber" value={editForm.policyNumber} onChange={handleInputChange} required disabled={isSubmitting} />
                   </div>
                 </div>
@@ -279,7 +280,7 @@ export default function ProviderClaim() {
                       </div>
                       <div className="form-group">
                         <label>Subtotal</label>
-                        <input type="text" value={`$${(item.quantity * item.unitCost).toFixed(2)}`} disabled />
+                        <input type="text" value={formatCurrency(item.quantity * item.unitCost)} disabled />
                       </div>
                     </div>
                     {editForm.lineItems.length > 1 && (

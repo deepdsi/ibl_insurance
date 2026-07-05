@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getClaims } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
+import { formatCurrency } from '../utils/currency';
 
 export default function AdminDashboard() {
   const [claims, setClaims] = useState<Claim[]>([]);
@@ -71,11 +72,11 @@ export default function AdminDashboard() {
           </div>
           <div className="stat-card">
             <div className="stat-label">Total Amount Claimed</div>
-            <div className="stat-value">${stats.totalAmount.toFixed(0)}</div>
+            <div className="stat-value">{formatCurrency(stats.totalAmount)}</div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Total Approved Payout</div>
-            <div className="stat-value">${stats.totalApproved.toFixed(0)}</div>
+            <div className="stat-value">{formatCurrency(stats.totalApproved)}</div>
           </div>
         </div>
 
@@ -100,7 +101,7 @@ export default function AdminDashboard() {
                 <tr key={claim._id} className="flagged">
                   <td>{claim.patientName}</td>
                   <td>{claim.procedureName}</td>
-                  <td>${claim.totalAmount.toFixed(2)}</td>
+                  <td>{formatCurrency(claim.totalAmount)}</td>
                   <td>
                     <span className={`status-badge status-${claim.status.toLowerCase().replace(/\s+/g, '-')}`}>
                       {claim.status}
