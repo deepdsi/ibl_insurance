@@ -55,6 +55,99 @@
   font-size: 20px;
 }
 
+.claim-detail {
+  display: grid;
+  gap: 24px;
+}
+
+.claim-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.claim-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+}
+
+.claim-card h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.claim-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #777;
+  margin: 16px 0 4px;
+}
+
+.claim-value {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+}
+
+.claim-status {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.claim-detail-table th,
+.claim-detail-table td {
+  padding: 14px 16px;
+}
+
+.claim-stat {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+}
+
+.claim-stat:last-child {
+  border-bottom: none;
+}
+
+.attachment-list,
+.audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attachment-list li,
+.audit-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.attachment-list li:last-child,
+.audit-list li:last-child {
+  border-bottom: none;
+}
+
+.attachment-list a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.audit-time {
+  display: block;
+  color: #555;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.audit-entry {
+  display: block;
+  color: #333;
+}
+
 .filter-bar {
   margin-bottom: 30px;
   display: flex;
