@@ -22,6 +22,10 @@ export const getClaims = async () => {
     const response = await client.get('/claims');
     return response.data;
 };
+export const getClaim = async (claimId) => {
+    const response = await client.get(`/claims/${claimId}`);
+    return response.data;
+};
 export const updateClaimStatus = async (claimId, status, reviewerNotes, rejectionReason) => {
     const response = await client.post(`/claims/${claimId}/review`, {
         status,

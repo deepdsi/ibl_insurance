@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import Login from './pages/Login';
 import ProviderDashboard from './pages/ProviderDashboard';
@@ -9,12 +10,14 @@ import SubmitClaim from './pages/SubmitClaim';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ReviewClaim from './pages/ReviewClaim';
 import AdminDashboard from './pages/AdminDashboard';
+import ProviderClaim from './pages/ProviderClaim';
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <ErrorBoundary>
+          <Routes>
           <Route path="/login" element={<Login />} />
 
           {/* Provider Routes */}
@@ -23,6 +26,14 @@ export default function App() {
             element={
               <ProtectedRoute requiredRoles={['provider']}>
                 <ProviderDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/provider/claim/:claimId"
+            element={
+              <ProtectedRoute requiredRoles={["provider"]}>
+                <ProviderClaim />
               </ProtectedRoute>
             }
           />
@@ -65,7 +76,8 @@ export default function App() {
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
+          </Routes>
+        </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
   );

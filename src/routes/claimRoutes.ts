@@ -47,6 +47,26 @@ router.get('/', requireAuth(['provider', 'reviewer', 'admin']), async (req: Requ
   res.json(claims);
 });
 
+router.get('/:id', requireAuth(['provider', 'reviewer', 'admin']), async (req: Request, res) => {
+  try {
+    const claim = await Claim.findById(req.params.id);
+    if (!claim) {
+      return res.status(404).json({ message: 'Claim not found' });
+    }
+
+    // If provider requests, ensure they own the claim
+    const authReq = req as AuthRequest;
+    if (authReq.user?.role === 'provider' && claim.providerId.toString() !== authReq.user.id) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    res.json(claim);
+  } catch (error) {
+    console.error('Get claim failed:', error);
+    res.status(500).json({ message: 'Failed to get claim', error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
 router.post('/:id/review', requireAuth(['reviewer', 'admin']), async (req: Request, res) => {
   try {
     const { status, reviewerNotes, rejectionReason, changedBy } = req.body;

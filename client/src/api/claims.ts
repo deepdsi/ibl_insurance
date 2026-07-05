@@ -28,6 +28,11 @@ export const getClaims = async () => {
   return response.data;
 };
 
+export const getClaim = async (claimId: string) => {
+  const response = await client.get<Claim>(`/claims/${claimId}`);
+  return response.data;
+};
+
 export const updateClaimStatus = async (claimId: string, status: string, reviewerNotes?: string, rejectionReason?: string) => {
   const response = await client.post<Claim>(`/claims/${claimId}/review`, {
     status,
