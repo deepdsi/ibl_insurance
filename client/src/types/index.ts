@@ -1,7 +1,22 @@
+export type UserRole = 'admin' | 'reviewer' | 'provider';
+
 export interface AuthUser {
   id: string;
   email: string;
-  role: 'admin' | 'reviewer' | 'provider';
+  role: UserRole;
+}
+
+export interface UserSummary {
+  _id: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  isActive: boolean;
+}
+
+export interface AdminUser extends UserSummary {
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ClaimLineItem {
@@ -12,7 +27,7 @@ export interface ClaimLineItem {
 
 export interface Claim {
   _id: string;
-  providerId: string;
+  providerId: string | UserSummary;
   patientName: string;
   policyNumber: string;
   dateOfBirth: string;
@@ -29,6 +44,7 @@ export interface Claim {
   patientResponsibility: number;
   auditTrail: Array<{
     changedBy: string;
+    changedByFullName?: string;
     action: string;
     timestamp: string;
     reason?: string;

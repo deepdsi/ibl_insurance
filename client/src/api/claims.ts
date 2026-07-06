@@ -60,7 +60,6 @@ export const updateClaimStatus = async (claimId: string, status: string, reviewe
     status,
     reviewerNotes,
     rejectionReason,
-    changedBy: 'current-user', // This should be the logged-in user's ID
   });
   return response.data;
 };

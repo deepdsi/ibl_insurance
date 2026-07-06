@@ -157,7 +157,8 @@ router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), asyn
 
 router.post('/:id/review', requireAuth(['reviewer', 'admin']), async (req: Request, res) => {
   try {
-    const { status, reviewerNotes, rejectionReason, changedBy } = req.body;
+    const authReq = req as AuthRequest;
+    const { status, reviewerNotes, rejectionReason } = req.body;
     const claim = await Claim.findById(req.params.id);
 
     if (!claim) {
@@ -167,7 +168,12 @@ router.post('/:id/review', requireAuth(['reviewer', 'admin']), async (req: Reque
     claim.status = status;
     claim.reviewerNotes = reviewerNotes;
     claim.rejectionReason = rejectionReason;
-    claim.auditTrail.push({ changedBy, action: `Status changed to ${status}`, timestamp: new Date(), reason: reviewerNotes || rejectionReason });
+    claim.auditTrail.push({
+      changedBy: authReq.user?.id || 'system',
+      action: `Status changed to ${status}`,
+      timestamp: new Date(),
+      reason: reviewerNotes || rejectionReason,
+    });
     await claim.save();
 
     res.json({
