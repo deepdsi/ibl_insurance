@@ -180,7 +180,7 @@ export default function ProviderClaim() {
                   <strong>{formatCurrency(claim.totalAmount)}</strong>
                 </div>
                 <div className="claim-stat">
-                  <span>Covered Amount (80% after deductible):</span>
+                  <span>Covered Amount (80% after ₹50,000 deductible, capped at ₹5,00,000):</span>
                   <strong>{formatCurrency(claim.coveredAmount)}</strong>
                 </div>
                 <div className="claim-stat">

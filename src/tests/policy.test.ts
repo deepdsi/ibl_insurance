@@ -28,4 +28,18 @@ describe('calculateCoverage', () => {
     expect(result.coveredAmount).toBe(0);
     expect(result.patientResponsibility).toBe(40000);
   });
+
+  it('treats negative claim amounts as zero', () => {
+    const result = calculateCoverage(-1000, 'policy-001');
+
+    expect(result.coveredAmount).toBe(0);
+    expect(result.patientResponsibility).toBe(0);
+  });
+
+  it('rounds currency results to two decimals', () => {
+    const result = calculateCoverage(50000.333, 'policy-001');
+
+    expect(result.coveredAmount).toBe(0.27);
+    expect(result.patientResponsibility).toBe(50000.06);
+  });
 });
