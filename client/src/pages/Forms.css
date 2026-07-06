@@ -179,6 +179,36 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+.review-attachment-list {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.review-attachment-list li {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+
+.review-attachment-list a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.review-attachment-list a:hover {
+  text-decoration: underline;
+}
+
+.empty-state {
+  color: #64748b;
+  margin: 0;
+}
+
 .coverage-details {
   background-color: #f8fafc;
   padding: 20px;

@@ -121,6 +121,23 @@ export default function ReviewClaim() {
           </section>
 
           <section className="form-section">
+            <h2>Supporting Documents</h2>
+            {claim.supportingDocuments && claim.supportingDocuments.length > 0 ? (
+              <ul className="review-attachment-list">
+                {claim.supportingDocuments.map((fileName) => (
+                  <li key={fileName}>
+                    <a href={`/uploads/${fileName}`} target="_blank" rel="noreferrer">
+                      {fileName}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-state">No documents uploaded.</p>
+            )}
+          </section>
+
+          <section className="form-section">
             <h2>Coverage Calculation</h2>
             <div className="coverage-details">
               <div className="coverage-row">
