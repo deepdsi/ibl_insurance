@@ -1,21 +1,23 @@
 .dashboard {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f8fafc;
   padding-bottom: 40px;
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
   color: white;
-  padding: 30px 40px;
+  padding: 28px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
 }
 
 .dashboard-header h1 {
   font-size: 28px;
+  font-weight: 750;
   margin: 0;
 }
 
@@ -38,6 +40,7 @@
   border-radius: 8px;
   text-align: center;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .stat-value {
@@ -59,8 +62,9 @@
 
 .dashboard-content h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #0f172a;
   font-size: 20px;
+  font-weight: 750;
 }
 
 .claim-detail {
@@ -77,8 +81,9 @@
 .claim-card {
   background: white;
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07);
 }
 
 .claim-card h2 {
@@ -90,13 +95,13 @@
 .claim-label {
   font-size: 12px;
   text-transform: uppercase;
-  color: #777;
+  color: #64748b;
   margin: 16px 0 4px;
 }
 
 .claim-value {
   font-size: 16px;
-  color: #333;
+  color: #0f172a;
   margin: 0;
 }
 
@@ -140,7 +145,7 @@
 }
 
 .attachment-list a {
-  color: #667eea;
+  color: #2563eb;
   text-decoration: none;
 }
 
@@ -153,7 +158,7 @@
 
 .audit-entry {
   display: block;
-  color: #333;
+  color: #0f172a;
 }
 
 .filter-bar {
@@ -169,16 +174,18 @@
 }
 
 .filter-bar select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
   border-radius: 4px;
   font-size: 14px;
+  background: white;
 }
 
 .admin-filter-bar {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
   flex-wrap: wrap;
   padding: 16px;
 }
@@ -190,7 +197,7 @@
 }
 
 .custom-date-range input {
-  border: 1px solid #ddd;
+  border: 1px solid #cbd5e1;
   border-radius: 4px;
   font-size: 14px;
   padding: 8px 12px;
@@ -205,16 +212,17 @@
 
 .stats-grid .stat-card {
   background: white;
-  padding: 25px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
   min-width: 0;
   text-align: center;
 }
 
 .stats-grid .stat-value {
   font-size: 32px;
-  color: #667eea;
+  color: #1d4ed8;
   line-height: 1.15;
   margin-top: 10px;
   overflow-wrap: anywhere;
@@ -222,39 +230,41 @@
 }
 
 .stats-grid .stat-label {
-  color: #666;
+  color: #64748b;
   font-size: 14px;
+  font-weight: 700;
 }
 
 .claims-table {
   width: 100%;
   background: white;
   border-collapse: collapse;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
   border-radius: 8px;
   overflow: hidden;
 }
 
 .claims-table thead {
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .claims-table th {
   padding: 15px;
   text-align: left;
-  font-weight: 600;
-  color: #333;
+  font-weight: 750;
+  color: #334155;
   font-size: 14px;
 }
 
 .claims-table td {
   padding: 15px;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
 }
 
 .claims-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: #f8fafc;
 }
 
 .claims-table tbody tr.pending {
@@ -306,9 +316,9 @@
 
 .primary-btn {
   background: white;
-  color: #667eea;
+  color: #1d4ed8;
   padding: 10px 20px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
@@ -316,14 +326,14 @@
 }
 
 .primary-btn:hover {
-  background: #f0f0f0;
+  background: #eff6ff;
   transform: translateY(-2px);
 }
 
 .secondary-btn {
-  background: #667eea;
+  background: #2563eb;
   color: white;
-  padding: 6px 12px;
+  padding: 7px 13px;
   border: none;
   border-radius: 4px;
   font-size: 12px;
@@ -332,7 +342,7 @@
 }
 
 .secondary-btn:hover {
-  background: #5568d3;
+  background: #1d4ed8;
 }
 
 .logout-btn {
@@ -386,7 +396,7 @@
 }
 
 .admin-section-header span {
-  color: #666;
+  color: #64748b;
   font-size: 14px;
 }
 
@@ -403,7 +413,7 @@
 }
 
 .admin-table tbody tr.selected-row {
-  background-color: #eef2ff;
+  background-color: #eff6ff;
 }
 
 .admin-claims-layout {
@@ -415,19 +425,20 @@
 
 .claim-audit-panel {
   background: white;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
   padding: 20px;
 }
 
 .claim-audit-panel h3 {
-  color: #333;
+  color: #0f172a;
   font-size: 18px;
   margin: 0 0 16px;
 }
 
 .audit-claim-summary {
-  background: #f8f9fa;
+  background: #f8fafc;
   border-radius: 8px;
   display: grid;
   gap: 6px;
@@ -436,16 +447,16 @@
 }
 
 .audit-claim-summary strong {
-  color: #333;
+  color: #0f172a;
 }
 
 .audit-claim-summary span {
-  color: #555;
+  color: #64748b;
   font-size: 13px;
 }
 
 .audit-meta {
-  color: #666;
+  color: #64748b;
   display: block;
   font-size: 12px;
   line-height: 1.5;
