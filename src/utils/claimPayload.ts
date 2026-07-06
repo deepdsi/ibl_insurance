@@ -1,10 +1,15 @@
+import { claimLineItemSchema } from './validation';
+
 export function parseLineItemsInput(rawValue: unknown): Array<{ description: string; quantity: number; unitCost: number }> {
   if (!rawValue) {
     return [];
   }
 
   if (Array.isArray(rawValue)) {
-    return rawValue as Array<{ description: string; quantity: number; unitCost: number }>;
+    return rawValue
+      .map((item) => claimLineItemSchema.safeParse(item))
+      .filter((result) => result.success)
+      .map((result) => result.data);
   }
 
   if (typeof rawValue === 'string') {
@@ -15,7 +20,7 @@ export function parseLineItemsInput(rawValue: unknown): Array<{ description: str
 
     try {
       const parsed = JSON.parse(trimmed);
-      return Array.isArray(parsed) ? parsed : [];
+      return parseLineItemsInput(parsed);
     } catch {
       return [];
     }

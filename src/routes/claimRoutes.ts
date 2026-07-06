@@ -5,16 +5,28 @@ import { requireAuth, type AuthRequest } from '../middleware/auth';
 import { upload } from '../utils/upload';
 import { parseLineItemsInput } from '../utils/claimPayload';
 import { formatCurrency } from '../utils/currency';
+import {
+  claimPayloadSchema,
+  objectIdSchema,
+  reviewClaimSchema,
+  sendValidationError,
+} from '../utils/validation';
 
 const router = Router();
 
 router.post('/', requireAuth(['provider']), upload.array('documents', 5), async (req: Request, res) => {
   try {
     const authReq = req as AuthRequest;
-    const { patientName, policyNumber, dateOfBirth, procedureName, procedureCode, dateOfService, lineItems } = req.body;
     const providerId = authReq.user?.id;
-    const parsedLineItems = parseLineItemsInput(lineItems);
-    const totalAmount = parsedLineItems.reduce((sum, item) => sum + item.quantity * item.unitCost, 0);
+    const parsedLineItems = parseLineItemsInput(req.body.lineItems);
+    const parsedBody = claimPayloadSchema.safeParse({ ...req.body, lineItems: parsedLineItems });
+
+    if (!parsedBody.success) {
+      return sendValidationError(res, parsedBody.error);
+    }
+
+    const { patientName, policyNumber, dateOfBirth, procedureName, procedureCode, dateOfService, lineItems } = parsedBody.data;
+    const totalAmount = lineItems.reduce((sum, item) => sum + item.quantity * item.unitCost, 0);
     const coverage = calculateCoverage(totalAmount);
 
     const claim = await Claim.create({
@@ -25,7 +37,7 @@ router.post('/', requireAuth(['provider']), upload.array('documents', 5), async 
       procedureName,
       procedureCode,
       dateOfService,
-      lineItems: parsedLineItems,
+      lineItems,
       totalAmount,
       supportingDocuments: req.files ? (req.files as Express.Multer.File[]).map((file) => file.filename) : [],
       coveredAmount: coverage.coveredAmount,
@@ -64,6 +76,11 @@ router.get('/', requireAuth(['provider', 'reviewer', 'admin']), async (req: Requ
 
 router.get('/:id', requireAuth(['provider', 'reviewer', 'admin']), async (req: Request, res) => {
   try {
+    const parsedParams = objectIdSchema.safeParse(req.params.id);
+    if (!parsedParams.success) {
+      return sendValidationError(res, parsedParams.error);
+    }
+
     const claim = await Claim.findById(req.params.id);
     if (!claim) {
       return res.status(404).json({ message: 'Claim not found' });
@@ -92,6 +109,11 @@ router.get('/:id', requireAuth(['provider', 'reviewer', 'admin']), async (req: R
 router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), async (req: Request, res) => {
   try {
     const authReq = req as AuthRequest;
+    const parsedParams = objectIdSchema.safeParse(req.params.id);
+    if (!parsedParams.success) {
+      return sendValidationError(res, parsedParams.error);
+    }
+
     const claim = await Claim.findById(req.params.id);
 
     if (!claim) {
@@ -106,9 +128,15 @@ router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), asyn
       return res.status(400).json({ message: 'Claim is not eligible for resubmission' });
     }
 
-    const { patientName, policyNumber, dateOfBirth, procedureName, procedureCode, dateOfService, lineItems } = req.body;
-    const parsedLineItems = parseLineItemsInput(lineItems);
-    const totalAmount = parsedLineItems.reduce((sum, item) => sum + item.quantity * item.unitCost, 0);
+    const parsedLineItems = parseLineItemsInput(req.body.lineItems);
+    const parsedBody = claimPayloadSchema.safeParse({ ...req.body, lineItems: parsedLineItems });
+
+    if (!parsedBody.success) {
+      return sendValidationError(res, parsedBody.error);
+    }
+
+    const { patientName, policyNumber, dateOfBirth, procedureName, procedureCode, dateOfService, lineItems } = parsedBody.data;
+    const totalAmount = lineItems.reduce((sum, item) => sum + item.quantity * item.unitCost, 0);
     const coverage = calculateCoverage(totalAmount);
 
     if (patientName) claim.patientName = patientName;
@@ -117,7 +145,7 @@ router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), asyn
     if (procedureName) claim.procedureName = procedureName;
     if (procedureCode) claim.procedureCode = procedureCode;
     if (dateOfService) claim.dateOfService = dateOfService;
-    if (parsedLineItems.length) claim.lineItems = parsedLineItems;
+    claim.lineItems = lineItems;
 
     if (req.files && (req.files as Express.Multer.File[]).length) {
       claim.supportingDocuments = [
@@ -158,7 +186,17 @@ router.put('/:id', requireAuth(['provider']), upload.array('documents', 5), asyn
 router.post('/:id/review', requireAuth(['reviewer', 'admin']), async (req: Request, res) => {
   try {
     const authReq = req as AuthRequest;
-    const { status, reviewerNotes, rejectionReason } = req.body;
+    const parsedParams = objectIdSchema.safeParse(req.params.id);
+    if (!parsedParams.success) {
+      return sendValidationError(res, parsedParams.error);
+    }
+
+    const parsedBody = reviewClaimSchema.safeParse(req.body);
+    if (!parsedBody.success) {
+      return sendValidationError(res, parsedBody.error);
+    }
+
+    const { status, reviewerNotes, rejectionReason } = parsedBody.data;
     const claim = await Claim.findById(req.params.id);
 
     if (!claim) {

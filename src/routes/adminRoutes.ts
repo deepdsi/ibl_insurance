@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import User from '../models/User';
 import Claim from '../models/Claim';
 import { requireAuth, type AuthRequest } from '../middleware/auth';
+import { objectIdSchema, sendValidationError, updateUserStatusSchema } from '../utils/validation';
 
 const router = Router();
 
@@ -13,11 +14,17 @@ router.get('/users', requireAuth(['admin']), async (_req, res) => {
 
 router.patch('/users/:id/status', requireAuth(['admin']), async (req, res) => {
   const authReq = req as AuthRequest;
-  const { isActive } = req.body;
-
-  if (typeof isActive !== 'boolean') {
-    return res.status(400).json({ message: 'isActive must be a boolean' });
+  const parsedParams = objectIdSchema.safeParse(req.params.id);
+  if (!parsedParams.success) {
+    return sendValidationError(res, parsedParams.error);
   }
+
+  const parsedBody = updateUserStatusSchema.safeParse(req.body);
+  if (!parsedBody.success) {
+    return sendValidationError(res, parsedBody.error);
+  }
+
+  const { isActive } = parsedBody.data;
 
   if (req.params.id === authReq.user?.id && !isActive) {
     return res.status(400).json({ message: 'You cannot suspend your own admin account' });

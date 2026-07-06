@@ -2,12 +2,18 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import { loginSchema, registerSchema, sendValidationError } from '../utils/validation';
 
 const router = Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
+    const parsed = registerSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return sendValidationError(res, parsed.error);
+    }
+
+    const { fullName, email, password, role } = parsed.data;
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -15,7 +21,7 @@ router.post('/register', async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ fullName, email, passwordHash, role: role || 'provider' });
+    const newUser = await User.create({ fullName, email, passwordHash, role });
 
     res.status(201).json({ user: { id: newUser._id, email: newUser.email, role: newUser.role } });
   } catch (error) {
@@ -25,7 +31,12 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const parsed = loginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return sendValidationError(res, parsed.error);
+    }
+
+    const { email, password } = parsed.data;
     const user = await User.findOne({ email });
 
     if (!user || !await bcrypt.compare(password, user.passwordHash)) {
