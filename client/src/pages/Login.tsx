@@ -62,10 +62,6 @@ export default function Login() {
           <p>
             New provider? <Link to="/register">Register here</Link>
           </p>
-          <p>Demo credentials:</p>
-          <p>Provider: provider@example.com / pass123</p>
-          <p>Reviewer: reviewer@example.com / pass123</p>
-          <p>Admin: admin@example.com / pass123</p>
         </div>
       </div>
     </div>
