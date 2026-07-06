@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
 import { AuthUser } from '../types';
 
 interface AuthContextType {
@@ -11,20 +11,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function getTokenExpiry(token: string) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1])) as { exp?: number };
+    return payload.exp ? payload.exp * 1000 : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
 
   const login = (newUser: AuthUser, newToken: string) => {
     setUser(newUser);
@@ -33,12 +32,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('user', JSON.stringify(newUser));
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-  };
+  }, []);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    const tokenExpiry = storedToken ? getTokenExpiry(storedToken) : null;
+
+    if (storedToken && storedUser && (!tokenExpiry || tokenExpiry > Date.now())) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    } else if (storedToken || storedUser) {
+      logout();
+    }
+
+    setIsLoading(false);
+  }, [logout]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const tokenExpiry = getTokenExpiry(token);
+    if (!tokenExpiry) return;
+
+    const timeout = tokenExpiry - Date.now();
+    if (timeout <= 0) {
+      logout();
+      return;
+    }
+
+    const timeoutId = window.setTimeout(logout, timeout);
+    return () => window.clearTimeout(timeoutId);
+  }, [logout, token]);
+
+  useEffect(() => {
+    window.addEventListener('auth:logout', logout);
+    return () => window.removeEventListener('auth:logout', logout);
+  }, [logout]);
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>

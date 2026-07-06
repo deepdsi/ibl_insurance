@@ -13,4 +13,15 @@ client.interceptors.request.use((config) => {
     }
     return config;
 });
+client.interceptors.response.use((response) => response, (error) => {
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || '';
+    const isAuthRequest = requestUrl.startsWith('/auth/');
+    if (status === 401 && !isAuthRequest) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.dispatchEvent(new Event('auth:logout'));
+    }
+    return Promise.reject(error);
+});
 export default client;

@@ -4,9 +4,11 @@ import { getClaims } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
 import { formatCurrency } from '../utils/currency';
+import { useAuth } from '../context/AuthContext';
 
 export default function ReviewerDashboard() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredStatus, setFilteredStatus] = useState('all');
@@ -28,15 +30,23 @@ export default function ReviewerDashboard() {
   const pendingClaims = claims.filter((c) => ['Submitted', 'Under Review'].includes(c.status));
   const displayClaims = filteredStatus === 'all' ? claims : claims.filter((c) => c.status === filteredStatus);
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <h1>Reviewer Dashboard</h1>
-        <div className="header-stats">
+        <div className="dashboard-actions">
           <div className="stat-card">
             <div className="stat-value">{pendingClaims.length}</div>
             <div className="stat-label">Pending Review</div>
           </div>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
         </div>
       </header>
 

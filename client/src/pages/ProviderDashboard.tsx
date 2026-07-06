@@ -4,9 +4,11 @@ import { getClaims } from '../api/claims';
 import { Claim } from '../types';
 import './Dashboard.css';
 import { formatCurrency } from '../utils/currency';
+import { useAuth } from '../context/AuthContext';
 
 export default function ProviderDashboard() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,13 +26,23 @@ export default function ProviderDashboard() {
     fetchClaims();
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <h1>Provider Dashboard</h1>
-        <button onClick={() => navigate('/provider/submit-claim')} className="primary-btn">
-          + Submit New Claim
-        </button>
+        <div className="dashboard-actions">
+          <button onClick={() => navigate('/provider/submit-claim')} className="primary-btn">
+            + Submit New Claim
+          </button>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
+        </div>
       </header>
 
       <section className="dashboard-content">

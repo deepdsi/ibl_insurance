@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAdminClaims, getAdminUsers, updateAdminUserStatus } from '../api/admin';
 import { AdminUser, Claim } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -51,7 +52,8 @@ function getStartOfDay(date: Date) {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [claims, setClaims] = useState<Claim[]>([]);
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
@@ -187,10 +189,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <h1>Admin Dashboard</h1>
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
       </header>
 
       <section className="dashboard-content admin-dashboard-content">

@@ -24,6 +24,14 @@
   gap: 20px;
 }
 
+.dashboard-actions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .stat-card {
   background: rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -325,6 +333,21 @@
 
 .secondary-btn:hover {
   background: #5568d3;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 10px 18px;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .secondary-btn:disabled {
