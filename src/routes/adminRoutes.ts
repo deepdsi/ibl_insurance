@@ -61,7 +61,38 @@ router.get('/claims', requireAuth(['admin']), async (_req, res) => {
 
 router.get('/flagged-claims', requireAuth(['admin']), async (_req, res) => {
   const claims = await Claim.find().sort({ createdAt: -1 });
-  const flagged = claims.filter((claim) => claim.totalAmount > 0 && claim.totalAmount > 3 * 1000);
+  const claimsByProcedure = claims.reduce<Record<string, typeof claims>>((groups, claim) => {
+    const procedureCode = claim.procedureCode.trim().toUpperCase();
+    groups[procedureCode] = [...(groups[procedureCode] || []), claim];
+    return groups;
+  }, {});
+
+  const flagged = claims.flatMap((claim) => {
+    const procedureCode = claim.procedureCode.trim().toUpperCase();
+    const matchingClaims = claimsByProcedure[procedureCode] || [];
+    const peerClaims = matchingClaims.filter((item) => item._id.toString() !== claim._id.toString());
+
+    if (peerClaims.length === 0) {
+      return [];
+    }
+
+    const averageAmount = peerClaims.reduce((sum, item) => sum + item.totalAmount, 0) / peerClaims.length;
+    const thresholdAmount = averageAmount * 3;
+
+    if (claim.totalAmount <= thresholdAmount) {
+      return [];
+    }
+
+    return [{
+      ...claim.toObject(),
+      fraudFlag: {
+        averageAmount,
+        thresholdAmount,
+        reason: 'Claim amount is more than 3x the average for the same procedure code',
+      },
+    }];
+  });
+
   res.json(flagged);
 });
 
