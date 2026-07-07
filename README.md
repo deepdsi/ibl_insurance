@@ -142,8 +142,17 @@ Frontend folders:
 - Zod validation is used on backend request boundaries for auth, claim payloads, review decisions, admin status updates, and object ids. This prevents malformed data from reaching business logic.
 - File uploads are stored on the local filesystem under `src/uploads` and served through `/uploads`. This is simple for local development, but a production deployment should use object storage such as S3/R2 and stricter access controls.
 - Claim audit trails are embedded in the claim document. This makes claim history easy to fetch with the claim, but very large audit histories could eventually justify a separate collection.
-- Admin fraud flags are rule-based, not ML-based. The current rule is transparent and easy to explain, but it is intentionally simplistic.
+- Admin fraud flags are rule-based. The current rule compares claims against other claims with the same procedure code.
 - Coverage calculation is deterministic and fixed for all claims. There is no per-member deductible tracking or annual usage ledger yet, so the annual limit is applied per calculation rather than across a real policy year history.
+
+## Fraud Flag Rule
+
+Admin fraud flags use a simple procedure-code peer comparison:
+
+- For each claim, the backend finds other claims with the same normalized procedure code.
+- If there are no peer claims for that procedure code, the claim is not flagged.
+- The peer average is calculated from those other claims only, excluding the claim being checked.
+- A claim is flagged when its total amount is more than `3x` that peer average.
 
 ## Policy Coverage Rules
 
