@@ -400,6 +400,33 @@
   font-size: 14px;
 }
 
+.admin-section-controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.admin-section-controls label {
+  align-items: center;
+  color: #334155;
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-section-controls select {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  color: #334155;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
 .table-scroll {
   overflow-x: auto;
 }
@@ -528,5 +555,11 @@
   .admin-section-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .admin-section-controls {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 }

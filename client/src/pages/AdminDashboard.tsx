@@ -63,6 +63,7 @@ export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState<'all' | 'today' | 'week' | 'month' | 'custom'>('all');
   const [customStartDate, setCustomStartDate] = useState(toDateInputValue(new Date()));
   const [customEndDate, setCustomEndDate] = useState(toDateInputValue(new Date()));
+  const [userRoleFilter, setUserRoleFilter] = useState<'all' | AdminUser['role']>('all');
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -147,6 +148,11 @@ export default function AdminDashboard() {
   const selectedClaim = useMemo(
     () => filteredClaims.find((claim) => claim._id === selectedClaimId) || filteredClaims[0] || null,
     [filteredClaims, selectedClaimId],
+  );
+
+  const filteredUsers = useMemo(
+    () => (userRoleFilter === 'all' ? users : users.filter((account) => account.role === userRoleFilter)),
+    [users, userRoleFilter],
   );
 
   useEffect(() => {
@@ -317,11 +323,24 @@ export default function AdminDashboard() {
         <section className="admin-section">
           <div className="admin-section-header">
             <h2>Users</h2>
-            <span>{users.length} accounts</span>
+            <div className="admin-section-controls">
+              <label>
+                Role:
+                <select value={userRoleFilter} onChange={(e) => setUserRoleFilter(e.target.value as typeof userRoleFilter)}>
+                  <option value="all">All Roles</option>
+                  <option value="provider">Provider/Patient</option>
+                  <option value="reviewer">Claims Reviewer</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+              <span>{filteredUsers.length} of {users.length} accounts</span>
+            </div>
           </div>
 
           {isLoading ? (
             <p>Loading users...</p>
+          ) : filteredUsers.length === 0 ? (
+            <p>No users match this role filter.</p>
           ) : (
             <div className="table-scroll">
               <table className="claims-table admin-table">
@@ -336,7 +355,7 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((account) => {
+                  {filteredUsers.map((account) => {
                     const isSelf = account._id === user?.id;
                     return (
                       <tr key={account._id}>
