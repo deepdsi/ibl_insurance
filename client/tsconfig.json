@@ -11,7 +11,8 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "moduleResolution": "bundler",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noEmit": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

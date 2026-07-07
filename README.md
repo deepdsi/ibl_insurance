@@ -144,7 +144,6 @@ Frontend folders:
 - Claim audit trails are embedded in the claim document. This makes claim history easy to fetch with the claim, but very large audit histories could eventually justify a separate collection.
 - Admin fraud flags are rule-based, not ML-based. The current rule is transparent and easy to explain, but it is intentionally simplistic.
 - Coverage calculation is deterministic and fixed for all claims. There is no per-member deductible tracking or annual usage ledger yet, so the annual limit is applied per calculation rather than across a real policy year history.
-- The frontend currently contains `.js` files generated from TypeScript alongside `.tsx` files because the local TypeScript build emits into `client/src`. The Vite entry uses `main.tsx`; the `.tsx` files are the source of truth.
 
 ## Policy Coverage Rules
 
@@ -256,4 +255,3 @@ Current tests cover:
 
 - Claim line item payload parsing
 - Policy coverage calculation
-
